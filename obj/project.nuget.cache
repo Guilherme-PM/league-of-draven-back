@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FkRrAt0zjb10cna0dYhRYQByoex6wnNJ3UPhArWUgjruFVSkKCRyXWwIZS0qyqXImOXgKaLljNhmW0mKb3RZfg==",
+  "dgSpecHash": "8MEAu8ZHmPn+y80z8jMEmE85oTbBbzmVVvZamjMz504qm0VtRD10mxI56Kn7Xn/WVA9NFxBLDqgoaESGwlSedQ==",
   "success": true,
-  "projectFilePath": "G:\\Projetos\\League of Draven\\LeagueOfDraven\\LeagueOfDraven.csproj",
+  "projectFilePath": "G:\\Projetos\\league-of-draven-back\\LeagueOfDraven.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\guipa\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\guipa\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.18\\microsoft.aspnetcore.authentication.jwtbearer.7.0.18.nupkg.sha512",

@@ -2366,11 +2366,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "G:\\Projetos\\League of Draven\\LeagueOfDraven\\LeagueOfDraven.csproj",
+      "projectUniqueName": "G:\\Projetos\\league-of-draven-back\\LeagueOfDraven.csproj",
       "projectName": "LeagueOfDraven",
-      "projectPath": "G:\\Projetos\\League of Draven\\LeagueOfDraven\\LeagueOfDraven.csproj",
+      "projectPath": "G:\\Projetos\\league-of-draven-back\\LeagueOfDraven.csproj",
       "packagesPath": "C:\\Users\\guipa\\.nuget\\packages\\",
-      "outputPath": "G:\\Projetos\\League of Draven\\LeagueOfDraven\\obj\\",
+      "outputPath": "G:\\Projetos\\league-of-draven-back\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\guipa\\AppData\\Roaming\\NuGet\\NuGet.Config",
