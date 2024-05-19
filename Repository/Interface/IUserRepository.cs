@@ -4,6 +4,6 @@ namespace LeagueOfDraven.Repository.Interface
 {
     public interface IUserRepository
     {
-        Task<User> InsertUser(User user);
+        Task<User> RegisterUser(User user);
     }
 }

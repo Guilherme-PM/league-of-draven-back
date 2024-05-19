@@ -1,18 +1,19 @@
 ﻿using LeagueOfDraven.Data;
 using LeagueOfDraven.Models;
-using System.Reflection;
+using LeagueOfDraven.Repository.Interface;
 
 namespace LeagueOfDraven.Repository
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _dbContext;
-        public UserRepository(AppDbContext appDbContext)
+
+        public UserRepository(AppDbContext dbContext)
         {
-            _dbContext = appDbContext;
+            _dbContext = dbContext;
         }
 
-        public async Task<User> InsertUser(User user)
+        public async Task<User> RegisterUser(User user)
         {
             await _dbContext.User.AddAsync(user);
             await _dbContext.SaveChangesAsync();

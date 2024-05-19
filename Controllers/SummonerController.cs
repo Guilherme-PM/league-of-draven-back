@@ -1,10 +1,12 @@
 ﻿using LeagueOfDraven.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ProjetoImobiliario.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SummonerController : ControllerBase
     {
         private readonly ISummonerService _summonerService;

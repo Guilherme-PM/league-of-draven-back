@@ -1,8 +1,9 @@
-﻿using LeagueOfDraven.Models;
+﻿using LeagueOfDraven.DTO.Authentication;
+using LeagueOfDraven.Models;
 using LeagueOfDraven.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ProjetoImobiliario.Controllers
+namespace LeagueOfDraven.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -17,7 +18,7 @@ namespace ProjetoImobiliario.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> RegisterUser(User user)
+        public async Task<object> RegisterUser(LoginDTO user)
         {
             return await _useService.RegisterUser(user);
         }

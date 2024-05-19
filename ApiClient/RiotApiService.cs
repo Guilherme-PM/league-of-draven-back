@@ -29,4 +29,17 @@ public class RiotApiService
             throw new Exception($"Erro ao acessar a API: {response.StatusCode}");
         }
     }
+
+    public async Task<string> GetDataDragonAsync(string url)
+    {
+        HttpResponseMessage response = await _client.GetAsync(url);
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadAsStringAsync();
+        }
+        else
+        {
+            throw new Exception($"Erro ao acessar a API: {response.StatusCode}");
+        }
+    }
 }

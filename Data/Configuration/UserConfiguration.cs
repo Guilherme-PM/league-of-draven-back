@@ -11,12 +11,6 @@ namespace LeagueOfDraven.Data.Configuration
         {
             builder.ToTable("USER");
             builder.HasKey(x => x.UserId);
-            //builder.HasData(new User()
-            //{
-            //    UserId = 1,
-            //    Username = "Master",
-            //    Password = 
-            //});
         }
     }
 }
