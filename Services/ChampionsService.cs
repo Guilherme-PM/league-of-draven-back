@@ -1,4 +1,5 @@
-﻿using LeagueOfDraven.Models.RIOT.Champions;
+﻿using LeagueOfDraven.DTO.Champions;
+using LeagueOfDraven.Models.RIOT.Champions;
 using LeagueOfDraven.Services.Interfaces;
 using Newtonsoft.Json;
 using System.Text.Json;
@@ -28,6 +29,36 @@ namespace LeagueOfDraven.Services
                 throw new Exception("Dados de campeões não encontrados");
 
             return championDataWrapper.Data.Values.ToList();
+        }
+
+        public async Task<List<ChampionTagDTO>> GetChampionTagCounts()
+        {
+            var champions = await GetAllChampions();
+
+            Dictionary<string, int> tagCounts = new Dictionary<string, int>();
+
+            foreach (var champion in champions)
+            {
+                foreach (var tag in champion.Tags)
+                {
+                    if (tagCounts.ContainsKey(tag))
+                    {
+                        tagCounts[tag]++;
+                    }
+                    else
+                    {
+                        tagCounts[tag] = 1;
+                    }
+                }
+            }
+
+            List<ChampionTagDTO> tags = tagCounts.Select(tc => new ChampionTagDTO
+            {
+                Tag = tc.Key,
+                Count = tc.Value
+            }).ToList();
+
+            return tags;
         }
 
         public class ChampionDataWrapper
