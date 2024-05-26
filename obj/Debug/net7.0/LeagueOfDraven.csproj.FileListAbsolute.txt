@@ -113,3 +113,6 @@ G:\Projetos\league-of-draven-back\obj\Debug\net7.0\LeagueOfDraven.pdb
 G:\Projetos\league-of-draven-back\obj\Debug\net7.0\LeagueOfDraven.genruntimeconfig.cache
 G:\Projetos\league-of-draven-back\obj\Debug\net7.0\ref\LeagueOfDraven.dll
 G:\Projetos\league-of-draven-back\bin\Debug\net7.0\Newtonsoft.Json.dll
+G:\Projetos\league-of-draven-back\bin\Debug\net7.0\AutoMapper.dll
+G:\Projetos\league-of-draven-back\bin\Debug\net7.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+G:\Projetos\league-of-draven-back\bin\Debug\net7.0\Data\Json\items.json

@@ -19,6 +19,84 @@ namespace LeagueOfDraven.Migrations
                 .HasAnnotation("ProductVersion", "7.0.18")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("LeagueOfDraven.Models.MatchesChampions", b =>
+                {
+                    b.Property<string>("UserMatchId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<long>("ParticipantId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ChampionName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Puuid")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("UserMatchId", "ParticipantId");
+
+                    b.ToTable("MATCHES_CHAMPIONS", (string)null);
+                });
+
+            modelBuilder.Entity("LeagueOfDraven.Models.MatchesPlayerItems", b =>
+                {
+                    b.Property<int>("MatchPlayerItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ItemName")
+                        .HasColumnType("longtext");
+
+                    b.Property<long>("ParticipantId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("UserMatchId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("MatchPlayerItemId");
+
+                    b.HasIndex("UserMatchId", "ParticipantId");
+
+                    b.ToTable("MATCHES_PLAYER_ITEMS", (string)null);
+                });
+
+            modelBuilder.Entity("LeagueOfDraven.Models.MatchesPlayerStatistics", b =>
+                {
+                    b.Property<string>("UserMatchId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<long>("ParticipantId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Farm")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GoldEarned")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GoldSpent")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Puuid")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("WonLane")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("WonMatch")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("UserMatchId", "ParticipantId");
+
+                    b.ToTable("MATCHES_PLAYER_STATISTICS", (string)null);
+                });
+
             modelBuilder.Entity("LeagueOfDraven.Models.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -82,6 +160,28 @@ namespace LeagueOfDraven.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("USER", (string)null);
+                });
+
+            modelBuilder.Entity("LeagueOfDraven.Models.UserMatches", b =>
+                {
+                    b.Property<string>("UserMatchId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("MatchDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<TimeSpan>("MatchDuration")
+                        .HasColumnType("time(6)");
+
+                    b.Property<string>("Puuid")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("UserMatchId");
+
+                    b.ToTable("USER_MATCHES", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -172,6 +272,50 @@ namespace LeagueOfDraven.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("LeagueOfDraven.Models.MatchesChampions", b =>
+                {
+                    b.HasOne("LeagueOfDraven.Models.UserMatches", "UserMatch")
+                        .WithMany("Champions")
+                        .HasForeignKey("UserMatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserMatch");
+                });
+
+            modelBuilder.Entity("LeagueOfDraven.Models.MatchesPlayerItems", b =>
+                {
+                    b.HasOne("LeagueOfDraven.Models.MatchesPlayerStatistics", "PlayerStatistics")
+                        .WithMany("Items")
+                        .HasForeignKey("UserMatchId", "ParticipantId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("PlayerStatistics");
+                });
+
+            modelBuilder.Entity("LeagueOfDraven.Models.MatchesPlayerStatistics", b =>
+                {
+                    b.HasOne("LeagueOfDraven.Models.UserMatches", "UserMatch")
+                        .WithMany("PlayerStatistics")
+                        .HasForeignKey("UserMatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserMatch");
+                });
+
+            modelBuilder.Entity("LeagueOfDraven.Models.MatchesPlayerStatistics", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("LeagueOfDraven.Models.UserMatches", b =>
+                {
+                    b.Navigation("Champions");
+
+                    b.Navigation("PlayerStatistics");
                 });
 #pragma warning restore 612, 618
         }

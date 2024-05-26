@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "Eyvyac9n/diR3PkZb4jm4gM6pc46GC4+KzQ9x1El/6xwnX9cc3MLvWbgtno1oJkrRswQ4uwCIeLbqjucR4peKA==",
+  "dgSpecHash": "9PK5J3EjpNCBpjrPfJ3+Jvima7aAuoJa2NDW/WdEnyKRXuL4aq1xUABp6ORnAmYVHcJgzDv3FR9wKQlhrl+Jmw==",
   "success": true,
   "projectFilePath": "G:\\Projetos\\league-of-draven-back\\LeagueOfDraven.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\guipa\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
+    "C:\\Users\\guipa\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",
     "C:\\Users\\guipa\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\guipa\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.18\\microsoft.aspnetcore.authentication.jwtbearer.7.0.18.nupkg.sha512",
     "C:\\Users\\guipa\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\7.0.18\\microsoft.aspnetcore.cryptography.internal.7.0.18.nupkg.sha512",

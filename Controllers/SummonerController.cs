@@ -6,7 +6,8 @@ namespace ProjetoImobiliario.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
+    [AllowAnonymous]
     public class SummonerController : ControllerBase
     {
         private readonly ISummonerService _summonerService;

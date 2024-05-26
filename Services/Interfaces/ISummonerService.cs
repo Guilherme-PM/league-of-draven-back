@@ -1,7 +1,10 @@
-﻿namespace LeagueOfDraven.Services.Interfaces
+﻿using LeagueOfDraven.DTO.Summoner;
+
+namespace LeagueOfDraven.Services.Interfaces
 {
     public interface ISummonerService
     {
-        Task<string> GetSummonerByNameAsync(string summonerName, string tagLine);
+        Task<SummonerPuuidDTO> GetSummonerByNameAsync(string gameName, string tagLine);
+        Task<SummonerPuuidDTO> GetSummonerByPUUID(string encryptedPUUID);
     }
 }

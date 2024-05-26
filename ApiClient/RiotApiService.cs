@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -15,14 +16,15 @@ public class RiotApiService
         _client = new HttpClient();
     }
 
-    public async Task<string> GetAsync(string endpoint)
+    public async Task<T> GetAsync<T>(string endpoint)
     {
         string url = $"https://{_region}.api.riotgames.com{endpoint}?api_key={_apiKey}";
 
         HttpResponseMessage response = await _client.GetAsync(url);
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadAsStringAsync();
+            string jsonResponse = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(jsonResponse);
         }
         else
         {
@@ -40,6 +42,18 @@ public class RiotApiService
         else
         {
             throw new Exception($"Erro ao acessar a API: {response.StatusCode}");
+        }
+    }
+
+    public string LoadLocalDataDragonJson(string filePath)
+    {
+        if (File.Exists(filePath))
+        {
+            return File.ReadAllText(filePath);
+        }
+        else
+        {
+            throw new Exception($"Arquivo não encontrado: {filePath}");
         }
     }
 }

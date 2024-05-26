@@ -1,5 +1,7 @@
 ﻿using LeagueOfDraven.Data.Configuration;
+using LeagueOfDraven.Data.Configuration.Matchs;
 using LeagueOfDraven.Models;
+using LeagueOfDraven.Models.RIOT.Matchs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +16,10 @@ namespace LeagueOfDraven.Data
         public DbSet<User> User { get; set; }
         public DbSet<IdentityUserClaim<string>> UserClaims { get; set; }
         public DbSet<IdentityUserRole<string>> UserRoles { get; set; }
+        public DbSet<UserMatches> UserMatches { get; set; }
+        public DbSet<MatchesChampions> MatchesChampions { get; set; }
+        public DbSet<MatchesPlayerStatistics> MatchesPlayerStatistics { get; set; }
+        public DbSet<MatchesPlayerItems> MatchesPlayerItems {  get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +30,10 @@ namespace LeagueOfDraven.Data
             modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserTokens").HasKey(ut => new { ut.UserId, ut.LoginProvider, ut.Name });
 
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new UserMatchesConfiguration());
+            modelBuilder.ApplyConfiguration(new MatchesChampionsConfiguration());
+            modelBuilder.ApplyConfiguration(new MatchesPlayerStatisticsConfiguration());
+            modelBuilder.ApplyConfiguration(new MatchesPlayerItemsConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
