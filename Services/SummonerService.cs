@@ -41,6 +41,7 @@ namespace LeagueOfDraven.Services
                 {
                     var match = await _matchsService.GetMatchDataAsync(matchId);
                     await InsertMatchData(match, summoner);
+                    await Task.Delay(100);
                 }
             }
 
@@ -51,7 +52,19 @@ namespace LeagueOfDraven.Services
         {
             var championsTasks = match.Info.Participants.Select(async p =>
             {
-                var summonerInfo = await GetSummonerByPUUID(p.Puuid);
+                SummonerPuuidDTO summonerInfo;
+
+                if (p.Puuid == "BOT")
+                {
+                    summonerInfo = new SummonerPuuidDTO
+                    {
+                        GameName = "BOT",
+                        TagLine = "BOT"
+                    };
+                }
+                else
+                    summonerInfo = await GetSummonerByPUUID(p.Puuid);            
+
                 return new MatchesChampions
                 {
                     Puuid = p.Puuid,
