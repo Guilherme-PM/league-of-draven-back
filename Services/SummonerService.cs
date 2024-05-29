@@ -84,10 +84,20 @@ namespace LeagueOfDraven.Services
                 ParticipantId = p.ParticipantId,
                 Items = await GetPlayerItems(p, match.MetaData.MatchId),
                 Farm = p.TotalMinionsKilled,
-                WonMatch = p.Win,
+                Deaths = p.Deaths,
+                Lane = p.Lane,
+                Role = p.Role,
+                TotalDamageDealt = p.TotalDamageDealt,
+                TotalDamageDealtToChampions = p.TotalDamageDealtToChampions,
+                TotalDamageTaken = p.TotalDamageTaken,
+                TotalHeal = p.TotalHeal,
+                VisionScore = p.VisionScore,
+                WardsKilled = p.WardsKilled,
+                WardsPlaced = p.WardsPlaced,
+                Kills = p.Kills,
                 GoldEarned = p.GoldEarned,
                 GoldSpent = p.GoldSpent,
-                WonLane = false
+                WonMatch = p.Win
             }).ToList();
 
             var playerStatistics = await Task.WhenAll(playerStatisticsTasks);
