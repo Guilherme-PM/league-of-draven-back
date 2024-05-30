@@ -1,6 +1,6 @@
 ﻿namespace LeagueOfDraven.DTO.Summoner
 {
-    public class SummonerPuuidDTO
+    public class SummonerAccountDTO
     {
         public string Puuid { get; set; }
         public string GameName { get; set; }

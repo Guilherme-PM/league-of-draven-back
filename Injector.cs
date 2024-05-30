@@ -15,10 +15,11 @@ namespace LeagueOfDraven
             services.AddTransient<ISummonerService, SummonerService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IChampionsService, ChampionsService>();
-            services.AddTransient<IMatchsService, MatchsService>();
+            services.AddTransient<IMatchesService, MatchesService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserMatchesRepository, UserMatchesRepository>();
+            services.AddScoped<IMatchesChampionsRepository, MatchesChampionsRepository>();
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using LeagueOfDraven.DTO.Summoner;
+﻿using LeagueOfDraven.DTO.Matches;
+using LeagueOfDraven.DTO.Summoner;
 using LeagueOfDraven.Models;
 using LeagueOfDraven.Models.RIOT.Matchs;
+using LeagueOfDraven.Models.RIOT.Summoner;
 using LeagueOfDraven.Repository.Interface;
 using LeagueOfDraven.Services.Interfaces;
 using Newtonsoft.Json.Linq;
@@ -10,23 +12,28 @@ namespace LeagueOfDraven.Services
     public class SummonerService : ISummonerService
     {
         private readonly RiotApiService _riotApiService;
-        private readonly IMatchsService _matchsService;
+        private readonly IMatchesService _matchsService;
         private readonly IUserMatchesRepository _userMatchesRepository;
+        private readonly IMatchesChampionsRepository _matchesChampionsRepository;
 
-        public SummonerService(RiotApiService riotApiService, IMatchsService matchsService, IUserMatchesRepository userMatchesRepository)
+        public SummonerService(RiotApiService riotApiService, 
+                               IMatchesService matchsService, 
+                               IUserMatchesRepository userMatchesRepository, 
+                               IMatchesChampionsRepository matchesChampionsRepository)
         {
             _riotApiService = riotApiService;
             _matchsService = matchsService;
             _userMatchesRepository = userMatchesRepository;
+            _matchesChampionsRepository = matchesChampionsRepository;
         }
 
-        public async Task<SummonerPuuidDTO> GetSummonerByNameAsync(string gameName, string tagLine)
+        public async Task<SummonerAccountDTO> GetSummonerByNameAsync(string gameName, string tagLine)
         {
             if(string.IsNullOrEmpty(gameName) || string.IsNullOrEmpty(tagLine))
                 throw new ArgumentException("gameName e tagLine devem ser fornecidos.");
 
             string endpoint = $"/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}";
-            SummonerPuuidDTO summoner = await _riotApiService.GetAsync<SummonerPuuidDTO>(endpoint);
+            SummonerAccountDTO summoner = await _riotApiService.GetAsync<SummonerAccountDTO>(endpoint);
 
             if (summoner == null)
                 throw new Exception("Summoner não encontrado");
@@ -41,85 +48,100 @@ namespace LeagueOfDraven.Services
                 {
                     var match = await _matchsService.GetMatchDataAsync(matchId);
                     await InsertMatchData(match, summoner);
-                    await Task.Delay(100);
                 }
             }
 
             return summoner;
         }
 
-        public async Task InsertMatchData(Match match, SummonerPuuidDTO summoner)
+        public async Task InsertMatchData(Match match, SummonerAccountDTO summoner)
         {
-            var championsTasks = match.Info.Participants.Select(async p =>
+            try
             {
-                SummonerPuuidDTO summonerInfo;
-
-                if (p.Puuid == "BOT")
+                var championsTasks = match.Info.Participants.Select(async p =>
                 {
-                    summonerInfo = new SummonerPuuidDTO
-                    {
-                        GameName = "BOT",
-                        TagLine = "BOT"
-                    };
-                }
-                else
-                    summonerInfo = await GetSummonerByPUUID(p.Puuid);            
+                    SummonerAccountDTO summonerInfo;
 
-                return new MatchesChampions
+                    if (p.Puuid == "BOT")
+                    {
+                        summonerInfo = new SummonerAccountDTO
+                        {
+                            GameName = "BOT",
+                            TagLine = "BOT"
+                        };
+                    }
+                    else
+                    {
+                        summonerInfo = await GetSummonerByPUUID(p.Puuid);
+                        await Task.Delay(1000);
+                    }
+
+                    return new MatchesChampions
+                    {
+                        Puuid = p.Puuid,
+                        ChampionName = p.ChampionName,
+                        UserName = summonerInfo.GameName + "#" + summonerInfo.TagLine,
+                        UserMatchId = match.MetaData.MatchId,
+                        ParticipantId = p.ParticipantId
+                    };
+                }).ToList();
+
+                var champions = await Task.WhenAll(championsTasks);
+
+                var playerStatisticsTasks = match.Info.Participants.Select(async p => new MatchesPlayerStatistics
                 {
                     Puuid = p.Puuid,
-                    ChampionName = p.ChampionName,
-                    UserName = summonerInfo.GameName + "#" + summonerInfo.TagLine,
                     UserMatchId = match.MetaData.MatchId,
-                    ParticipantId = p.ParticipantId
+                    ParticipantId = p.ParticipantId,
+                    Items = await GetPlayerItems(p, match.MetaData.MatchId),
+                    Farm = p.TotalMinionsKilled,
+                    Deaths = p.Deaths,
+                    Lane = p.Lane,
+                    Role = p.Role,
+                    TotalDamageDealt = p.TotalDamageDealt,
+                    TotalDamageDealtToChampions = p.TotalDamageDealtToChampions,
+                    TotalDamageTaken = p.TotalDamageTaken,
+                    TotalHeal = p.TotalHeal,
+                    VisionScore = p.VisionScore,
+                    WardsKilled = p.WardsKilled,
+                    WardsPlaced = p.WardsPlaced,
+                    Kills = p.Kills,
+                    GoldEarned = p.GoldEarned,
+                    GoldSpent = p.GoldSpent,
+                    WonMatch = p.Win
+                }).ToList();
+
+                var playerStatistics = await Task.WhenAll(playerStatisticsTasks);
+
+                var userMatch = new UserMatches
+                {
+                    Puuid = summoner.Puuid,
+                    UserName = summoner.GameName + "#" + summoner.TagLine,
+                    UserMatchId = match.MetaData.MatchId,
+                    MatchDate = DateTimeOffset.FromUnixTimeMilliseconds(match.Info.GameCreation).DateTime,
+                    MatchDuration = TimeSpan.FromSeconds(match.Info.GameDuration),
+                    Champions = champions.ToList(),
+                    PlayerStatistics = playerStatistics.ToList()
                 };
-            }).ToList();
 
-            var champions = await Task.WhenAll(championsTasks);
-
-            var playerStatisticsTasks = match.Info.Participants.Select(async p => new MatchesPlayerStatistics
+                await _userMatchesRepository.AddUserMatchAsync(userMatch);
+            } catch (Exception ex)
             {
-                Puuid = p.Puuid,
-                UserMatchId = match.MetaData.MatchId,
-                ParticipantId = p.ParticipantId,
-                Items = await GetPlayerItems(p, match.MetaData.MatchId),
-                Farm = p.TotalMinionsKilled,
-                Deaths = p.Deaths,
-                Lane = p.Lane,
-                Role = p.Role,
-                TotalDamageDealt = p.TotalDamageDealt,
-                TotalDamageDealtToChampions = p.TotalDamageDealtToChampions,
-                TotalDamageTaken = p.TotalDamageTaken,
-                TotalHeal = p.TotalHeal,
-                VisionScore = p.VisionScore,
-                WardsKilled = p.WardsKilled,
-                WardsPlaced = p.WardsPlaced,
-                Kills = p.Kills,
-                GoldEarned = p.GoldEarned,
-                GoldSpent = p.GoldSpent,
-                WonMatch = p.Win
-            }).ToList();
-
-            var playerStatistics = await Task.WhenAll(playerStatisticsTasks);
-
-            var userMatch = new UserMatches
-            {
-                Puuid = summoner.Puuid,
-                UserName = summoner.GameName + "#" + summoner.TagLine,
-                UserMatchId = match.MetaData.MatchId,
-                MatchDate = DateTimeOffset.FromUnixTimeMilliseconds(match.Info.GameCreation).DateTime,
-                MatchDuration = TimeSpan.FromSeconds(match.Info.GameDuration),
-                Champions = champions.ToList(),
-                PlayerStatistics = playerStatistics.ToList()
-            };
-
-            await _userMatchesRepository.AddUserMatchAsync(userMatch);
+                if (ex.Message.Contains("TooManyRequests"))
+                {
+                    throw new Exception("Ocorreu um erro: Muitas requisições. Tente novamente mais tarde." + summoner);
+                }
+                else
+                {
+                    throw new Exception("Ocorreu um erro interno no sistema: " + ex.Message);
+                }
+            }
         }
 
         public async Task<List<MatchesPlayerItems>> GetPlayerItems(MatchParticipant participant, string matchId)
         {
             var items = new List<MatchesPlayerItems>();
-            string filePath = @"G:\Projetos\league-of-draven-back\Data\Json\items.json"; // Arrumar essa merda depois
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "Json", "items.json");
             var json = _riotApiService.LoadLocalDataDragonJson(filePath);
 
             JObject itemData = JObject.Parse(json);
@@ -143,16 +165,50 @@ namespace LeagueOfDraven.Services
             return items;
         }
 
-        public async Task<SummonerPuuidDTO> GetSummonerByPUUID(string encryptedPUUID)
+        public async Task<SummonerAccountDTO> GetSummonerByPUUID(string encryptedPUUID)
         {
             if (string.IsNullOrEmpty(encryptedPUUID))
                 throw new ArgumentException("encryptedPUUID deve ser fornecido");
 
             string endpoint = $"/riot/account/v1/accounts/by-puuid/{encryptedPUUID}";
-            var summoner = await _riotApiService.GetAsync<SummonerPuuidDTO>(endpoint);
+            var summoner = await _riotApiService.GetAsync<SummonerAccountDTO>(endpoint);
 
             if (summoner == null)
                 throw new Exception("Summoner não encontrado");
+
+            return summoner;
+        }
+
+        public async Task<SummonerLevelAccount> GetSummonerLevel(string encryptedPUUID)
+        {
+            if (string.IsNullOrEmpty(encryptedPUUID))
+                throw new ArgumentException("encryptedPUUID deve ser fornecido");
+
+            string endpoint = $"/lol/summoner/v4/summoners/by-puuid/{encryptedPUUID}";
+            var summoner = await _riotApiService.GetAsyncByRegion<SummonerLevelAccount>(endpoint);
+
+            if (summoner == null)
+                throw new Exception("Summoner não encontrado");
+
+            return summoner;
+        }
+
+        public async Task<SummonerDTO> GetSummonerDashboard(string encryptedPUUID)
+        {
+            SummonerAccountDTO summonerAccount = await GetSummonerByPUUID(encryptedPUUID);
+            SummonerLevelAccount summonerPuuid = await GetSummonerLevel(encryptedPUUID);
+
+            var mostPlayedChampion = await _matchesChampionsRepository.GetTotalMatchesChampionByPUUID(encryptedPUUID);
+
+
+            SummonerDTO summoner = new()
+            {
+                Username = summonerAccount.GameName + " # " + summonerAccount.TagLine,
+                SummonerLevel = summonerPuuid.SummonerLevel,
+                MostPlayedChampion = mostPlayedChampion.ChampionName,
+                MostPlayedChampionCount = mostPlayedChampion.Count,
+                BackgroundImage = $"https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{mostPlayedChampion.ChampionName}_0.jpg"
+            };
 
             return summoner;
         }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LeagueOfDraven.DTO.Dashboard;
 using LeagueOfDraven.DTO.Matches;
 using LeagueOfDraven.Models.RIOT.Matchs;
 using LeagueOfDraven.Repository.Interface;
@@ -8,13 +9,13 @@ using System.Net.Http;
 
 namespace LeagueOfDraven.Services
 {
-    public class MatchsService : IMatchsService
+    public class MatchesService : IMatchesService
     {
         private readonly RiotApiService _riotApiService;
         private readonly IUserMatchesRepository _userMatchesRepository;
         private readonly IMapper _mapper;
 
-        public MatchsService(RiotApiService riotApiService, IUserMatchesRepository userMatchesRepository, IMapper mapper)
+        public MatchesService(RiotApiService riotApiService, IUserMatchesRepository userMatchesRepository, IMapper mapper)
         {
             _riotApiService = riotApiService;
             _userMatchesRepository = userMatchesRepository;
@@ -43,6 +44,18 @@ namespace LeagueOfDraven.Services
             MatchDTO matchDTO = _mapper.Map<MatchDTO>(match);
 
             return matchDTO;
+        }
+
+        public async Task<TotalMatchesAndUsersDTO> TotalMatchesAndUsers()
+        {
+            var matches = await _userMatchesRepository.TotalMatches();
+            var users = await _userMatchesRepository.TotalUsers();
+
+            return new TotalMatchesAndUsersDTO()
+            {
+                TotalMatches = matches,
+                TotalUsers = users
+            };
         }
     }
 }

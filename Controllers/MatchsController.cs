@@ -10,20 +10,25 @@ namespace LeagueOfDraven.Controllers
     [ApiController]
     public class MatchsController
     {
-        private readonly IMatchsService _matchsService;
+        private readonly IMatchesService _matchsService;
 
-        public MatchsController(IMatchsService matchsService)
+        public MatchsController(IMatchesService matchsService)
         {
             _matchsService = matchsService;
         }
 
         [HttpGet]
-        [Authorize]
         [Route("[action]/{matchId}")]
         public async Task<object> GetMatch(string matchId)
-
         {
             return await _matchsService.GetMatch(matchId);
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<object> TotalMatchesAndUsers()
+        {
+            return await _matchsService.TotalMatchesAndUsers();
         }
     }
 }

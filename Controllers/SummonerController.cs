@@ -23,5 +23,12 @@ namespace ProjetoImobiliario.Controllers
         {
             return await _summonerService.GetSummonerByNameAsync(gameName, tagLine);
         }
+
+        [HttpGet]
+        [Route("[action]/{encryptedPUUID}")]
+        public async Task<object> GetSummonerDashboard(string encryptedPUUID)
+        {
+            return await _summonerService.GetSummonerDashboard(encryptedPUUID);
+        }
     }
 }

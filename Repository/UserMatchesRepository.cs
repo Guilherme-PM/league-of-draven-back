@@ -30,5 +30,15 @@ namespace LeagueOfDraven.Repository
             return await _dbContext.UserMatches.Include(x => x.PlayerStatistics).ThenInclude(x => x.Items).Include(x => x.Champions)
                 .FirstOrDefaultAsync(um => um.UserMatchId == userMatchId);
         }
+
+        public async Task<int> TotalMatches()
+        {
+            return await _dbContext.UserMatches.Select(x => x.Puuid).CountAsync();
+        }
+
+        public async Task<int> TotalUsers()
+        {
+            return await _dbContext.UserMatches.Select(x => x.Puuid).Distinct().CountAsync();
+        }
     }
 }
