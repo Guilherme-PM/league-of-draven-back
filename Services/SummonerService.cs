@@ -193,13 +193,27 @@ namespace LeagueOfDraven.Services
             return summoner;
         }
 
+        public async Task<SummonerRankedDTO> GetSummonerLeague(string encryptedSummonerId)
+        {
+            if (string.IsNullOrEmpty(encryptedSummonerId))
+                throw new ArgumentException("encryptedSummonerId deve ser fornecido");
+
+            string endpoint = $"/lol/league/v4/entries/by-summoner/{encryptedSummonerId}";
+            List<SummonerRankedDTO> summoner = await _riotApiService.GetAsyncByRegion<List<SummonerRankedDTO>>(endpoint);
+
+            if (summoner == null)
+                throw new Exception("Summoner não encontrado");
+
+            return summoner[0];
+        }
+
         public async Task<SummonerDTO> GetSummonerDashboard(string encryptedPUUID)
         {
             SummonerAccountDTO summonerAccount = await GetSummonerByPUUID(encryptedPUUID);
             SummonerLevelAccount summonerPuuid = await GetSummonerLevel(encryptedPUUID);
+            SummonerRankedDTO summonerRanked = await GetSummonerLeague(summonerPuuid.Id);
 
             var mostPlayedChampion = await _matchesChampionsRepository.GetTotalMatchesChampionByPUUID(encryptedPUUID);
-
 
             SummonerDTO summoner = new()
             {
@@ -208,6 +222,15 @@ namespace LeagueOfDraven.Services
                 MostPlayedChampion = mostPlayedChampion.ChampionName,
                 MostPlayedChampionCount = mostPlayedChampion.Count,
                 BackgroundImage = $"https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{mostPlayedChampion.ChampionName}_0.jpg"
+            };
+
+            summoner.SummonerRankedDTO = new()
+            {
+                Tier = summonerRanked.Tier,
+                Rank = summonerRanked.Rank,
+                LeaguePoints = summonerRanked.LeaguePoints,
+                Wins = summonerRanked.Wins,
+                Losses = summonerRanked.Losses,
             };
 
             return summoner;

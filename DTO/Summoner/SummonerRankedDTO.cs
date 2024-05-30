@@ -2,7 +2,6 @@
 {
     public class SummonerRankedDTO
     {
-        public string ImageTier { get; set; }
         public string Tier { get; set; }
         public string Rank { get; set; }
         public int LeaguePoints { get; set; }
