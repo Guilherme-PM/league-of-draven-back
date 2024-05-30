@@ -7,5 +7,7 @@ namespace LeagueOfDraven.Services.Interfaces
     {
         Task<List<ChampionData>> GetAllChampions();
         Task<List<ChampionTagDTO>> GetChampionTagCounts();
+        Task<List<ChampionMasteries>> GetMasteriesChampionsByPUUID(string encryptedPUUID);
+        Task<ChampionData> GetChampionByID(int championID);
     }
 }

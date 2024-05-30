@@ -15,6 +15,7 @@ namespace LeagueOfDraven.AutoMapper
         public static MapperConfigurationExpression AddAutoMapperLeagueOfDraven(this MapperConfigurationExpression mce)
         {
             mce.AddProfile<ProfileMatch>();
+            mce.AddProfile<ProfileChampion>();
 
             return mce;
         }

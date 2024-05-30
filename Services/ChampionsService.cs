@@ -1,4 +1,5 @@
 ﻿using LeagueOfDraven.DTO.Champions;
+using LeagueOfDraven.DTO.Summoner;
 using LeagueOfDraven.Models.RIOT.Champions;
 using LeagueOfDraven.Services.Interfaces;
 using Newtonsoft.Json;
@@ -31,6 +32,15 @@ namespace LeagueOfDraven.Services
             return championDataWrapper.Data.Values.ToList();
         }
 
+        public async Task<ChampionData> GetChampionByID(int championID)
+        {
+            List<ChampionData> champions = await GetAllChampions();
+
+            ChampionData champion = champions.Where(x => x.Key == championID).FirstOrDefault();
+
+            return champion;
+        }
+
         public async Task<List<ChampionTagDTO>> GetChampionTagCounts()
         {
             var champions = await GetAllChampions();
@@ -41,14 +51,10 @@ namespace LeagueOfDraven.Services
             {
                 foreach (var tag in champion.Tags)
                 {
-                    if (tagCounts.ContainsKey(tag))
-                    {
-                        tagCounts[tag]++;
-                    }
-                    else
-                    {
-                        tagCounts[tag] = 1;
-                    }
+                    if (tagCounts.ContainsKey(tag))              
+                        tagCounts[tag]++;              
+                    else              
+                        tagCounts[tag] = 1;             
                 }
             }
 
@@ -61,9 +67,23 @@ namespace LeagueOfDraven.Services
             return tags;
         }
 
+        public async Task<List<ChampionMasteries>> GetMasteriesChampionsByPUUID(string encryptedPUUID)
+        {
+            if (string.IsNullOrEmpty(encryptedPUUID))
+                throw new ArgumentException("encryptedPUUID deve ser fornecido");
+
+            string endpoint = $"/lol/champion-mastery/v4/champion-masteries/by-puuid/{encryptedPUUID}";
+            List<ChampionMasteries> championMasteries = await _riotApiService.GetAsyncByRegion<List<ChampionMasteries>>(endpoint);
+
+            if (championMasteries == null)
+                throw new Exception("Não foi encontrado nenhuma maestria de campeões");
+
+            return championMasteries;
+        }
+
         public class ChampionDataWrapper
         {
-            public Dictionary<string, ChampionData>? Data { get; set; }
+            public Dictionary<string, ChampionData> Data { get; set; }
         }
     }
 }

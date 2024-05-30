@@ -1,6 +1,8 @@
-﻿using LeagueOfDraven.DTO.Matches;
+﻿using AutoMapper;
+using LeagueOfDraven.DTO.Matches;
 using LeagueOfDraven.DTO.Summoner;
 using LeagueOfDraven.Models;
+using LeagueOfDraven.Models.RIOT.Champions;
 using LeagueOfDraven.Models.RIOT.Matchs;
 using LeagueOfDraven.Models.RIOT.Summoner;
 using LeagueOfDraven.Repository.Interface;
@@ -15,16 +17,22 @@ namespace LeagueOfDraven.Services
         private readonly IMatchesService _matchsService;
         private readonly IUserMatchesRepository _userMatchesRepository;
         private readonly IMatchesChampionsRepository _matchesChampionsRepository;
+        private readonly IChampionsService _championsService;
+        private readonly IMapper _mapper;
 
         public SummonerService(RiotApiService riotApiService, 
                                IMatchesService matchsService, 
                                IUserMatchesRepository userMatchesRepository, 
-                               IMatchesChampionsRepository matchesChampionsRepository)
+                               IMatchesChampionsRepository matchesChampionsRepository,
+                               IChampionsService championsService,
+                               IMapper mapper)
         {
             _riotApiService = riotApiService;
             _matchsService = matchsService;
             _userMatchesRepository = userMatchesRepository;
             _matchesChampionsRepository = matchesChampionsRepository;
+            _championsService = championsService;
+            _mapper = mapper;
         }
 
         public async Task<SummonerAccountDTO> GetSummonerByNameAsync(string gameName, string tagLine)
@@ -118,6 +126,7 @@ namespace LeagueOfDraven.Services
                     Puuid = summoner.Puuid,
                     UserName = summoner.GameName + "#" + summoner.TagLine,
                     UserMatchId = match.MetaData.MatchId,
+                    GameMode = match.Info.GameMode,
                     MatchDate = DateTimeOffset.FromUnixTimeMilliseconds(match.Info.GameCreation).DateTime,
                     MatchDuration = TimeSpan.FromSeconds(match.Info.GameDuration),
                     Champions = champions.ToList(),
@@ -212,12 +221,17 @@ namespace LeagueOfDraven.Services
             SummonerAccountDTO summonerAccount = await GetSummonerByPUUID(encryptedPUUID);
             SummonerLevelAccount summonerPuuid = await GetSummonerLevel(encryptedPUUID);
             SummonerRankedDTO summonerRanked = await GetSummonerLeague(summonerPuuid.Id);
+            List<ChampionMasteries> championMasteries = await _championsService.GetMasteriesChampionsByPUUID(encryptedPUUID);
+
+            SummonerMasteryDTO championHighestMastery = _mapper.Map<SummonerMasteryDTO>(championMasteries[0]);
 
             var mostPlayedChampion = await _matchesChampionsRepository.GetTotalMatchesChampionByPUUID(encryptedPUUID);
 
+            ChampionData champion = await _championsService.GetChampionByID(championMasteries[0].ChampionId);
+
             SummonerDTO summoner = new()
             {
-                Username = summonerAccount.GameName + " # " + summonerAccount.TagLine,
+                Username = summonerAccount.GameName + "#" + summonerAccount.TagLine,
                 SummonerLevel = summonerPuuid.SummonerLevel,
                 MostPlayedChampion = mostPlayedChampion.ChampionName,
                 MostPlayedChampionCount = mostPlayedChampion.Count,
@@ -231,6 +245,14 @@ namespace LeagueOfDraven.Services
                 LeaguePoints = summonerRanked.LeaguePoints,
                 Wins = summonerRanked.Wins,
                 Losses = summonerRanked.Losses,
+            };
+
+            summoner.SummonerMasteryDTO = new()
+            {
+                ChampionName = champion.Name,
+                ChampionLevel = championHighestMastery.ChampionLevel,
+                ChampionPoints = championHighestMastery.ChampionPoints,
+                ChampionImage = $"https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{champion.Name}_0.jpg"
             };
 
             return summoner;
