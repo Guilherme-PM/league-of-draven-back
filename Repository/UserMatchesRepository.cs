@@ -1,4 +1,5 @@
 ﻿using LeagueOfDraven.Data;
+using LeagueOfDraven.DTO.Summoner;
 using LeagueOfDraven.Models;
 using LeagueOfDraven.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,26 @@ namespace LeagueOfDraven.Repository
         public async Task<int> TotalUsers()
         {
             return await _dbContext.UserMatches.Select(x => x.Puuid).Distinct().CountAsync();
+        }
+
+        public async Task<SummonerDTO> GetTotalStatistics(string encryptedPUUID)
+        {
+            var totalDeaths = await _dbContext.MatchesPlayerStatistics.Where(x => x.Puuid == encryptedPUUID).SumAsync(x => x.Deaths);
+            var totalKills = await _dbContext.MatchesPlayerStatistics.Where(x => x.Puuid == encryptedPUUID).SumAsync(x => x.Kills);
+            var totalDamage = await _dbContext.MatchesPlayerStatistics.Where(x => x.Puuid == encryptedPUUID).SumAsync(x => x.TotalDamageDealt);
+            var totalDamageChampions = await _dbContext.MatchesPlayerStatistics.Where(x => x.Puuid == encryptedPUUID).SumAsync(x => x.TotalDamageDealtToChampions);
+            var totalDamageTaken = await _dbContext.MatchesPlayerStatistics.Where(x => x.Puuid == encryptedPUUID).SumAsync(x => x.TotalDamageTaken);
+            var totalGoldEarned = await _dbContext.MatchesPlayerStatistics.Where(x => x.Puuid == encryptedPUUID).SumAsync(x => x.GoldEarned);
+
+            return new SummonerDTO
+            {
+                TotalDeaths = totalDeaths,
+                TotalKills = totalKills,
+                TotalDamage = totalDamage,
+                TotalDamageChampions = totalDamageChampions,
+                TotalDamageTaken = totalDamageTaken,
+                TotalGoldEarned = totalGoldEarned
+            };
         }
     }
 }

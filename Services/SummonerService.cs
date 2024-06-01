@@ -46,20 +46,34 @@ namespace LeagueOfDraven.Services
             if (summoner == null)
                 throw new Exception("Summoner não encontrado");
 
+            return summoner;
+        }
+
+        public async Task<object> AddMatchesDatabase(string gameName, string tagLine)
+        {
+            if (string.IsNullOrEmpty(gameName) || string.IsNullOrEmpty(tagLine))
+                throw new ArgumentException("gameName e tagLine devem ser fornecidos.");
+
+            string endpoint = $"/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}";
+            SummonerAccountDTO summoner = await _riotApiService.GetAsync<SummonerAccountDTO>(endpoint);
+
+            if (summoner == null)
+                throw new Exception("Summoner não encontrado");
+
             List<string> matches = await _matchsService.GetMatchIds(summoner.Puuid);
 
             foreach (var matchId in matches)
             {
                 var matchVerification = await _userMatchesRepository.GetUserMatchByIdAsync(matchId);
 
-                if(matchVerification == null)
+                if (matchVerification == null)
                 {
                     var match = await _matchsService.GetMatchDataAsync(matchId);
                     await InsertMatchData(match, summoner);
                 }
             }
 
-            return summoner;
+            return "Dados inseridos com sucesso";
         }
 
         public async Task InsertMatchData(Match match, SummonerAccountDTO summoner)
@@ -213,6 +227,9 @@ namespace LeagueOfDraven.Services
             if (summoner == null)
                 throw new Exception("Summoner não encontrado");
 
+            if (summoner.Count == 0)
+                return null;
+
             return summoner[0];
         }
 
@@ -228,6 +245,7 @@ namespace LeagueOfDraven.Services
             var mostPlayedChampion = await _matchesChampionsRepository.GetTotalMatchesChampionByPUUID(encryptedPUUID);
 
             ChampionData champion = await _championsService.GetChampionByID(championMasteries[0].ChampionId);
+            SummonerDTO totals = await _userMatchesRepository.GetTotalStatistics(encryptedPUUID);
 
             SummonerDTO summoner = new()
             {
@@ -235,25 +253,37 @@ namespace LeagueOfDraven.Services
                 SummonerLevel = summonerPuuid.SummonerLevel,
                 MostPlayedChampion = mostPlayedChampion.ChampionName,
                 MostPlayedChampionCount = mostPlayedChampion.Count,
+                TotalDeaths = totals.TotalDeaths,
+                TotalKills = totals.TotalKills,
+                TotalDamage = totals.TotalDamage,
+                TotalDamageChampions = totals.TotalDamageChampions,
+                TotalDamageTaken = totals.TotalDamageTaken,
+                TotalGoldEarned = totals.TotalGoldEarned,
                 BackgroundImage = $"https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{mostPlayedChampion.ChampionName}_0.jpg"
             };
-
-            summoner.SummonerRankedDTO = new()
+            
+            if(summonerRanked != null)
             {
-                Tier = summonerRanked.Tier,
-                Rank = summonerRanked.Rank,
-                LeaguePoints = summonerRanked.LeaguePoints,
-                Wins = summonerRanked.Wins,
-                Losses = summonerRanked.Losses,
-            };
+                summoner.SummonerRankedDTO = new()
+                {
+                    Tier = summonerRanked.Tier,
+                    Rank = summonerRanked.Rank,
+                    LeaguePoints = summonerRanked.LeaguePoints,
+                    Wins = summonerRanked.Wins,
+                    Losses = summonerRanked.Losses,
+                };
+            }
 
-            summoner.SummonerMasteryDTO = new()
+            if(championMasteries != null)
             {
-                ChampionName = champion.Name,
-                ChampionLevel = championHighestMastery.ChampionLevel,
-                ChampionPoints = championHighestMastery.ChampionPoints,
-                ChampionImage = $"https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{champion.Name}_0.jpg"
-            };
+                summoner.SummonerMasteryDTO = new()
+                {
+                    ChampionName = champion.Name,
+                    ChampionLevel = championHighestMastery.ChampionLevel,
+                    ChampionPoints = championHighestMastery.ChampionPoints,
+                    ChampionImage = $"https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{champion.Name}_0.jpg"
+                };
+            }
 
             return summoner;
         }

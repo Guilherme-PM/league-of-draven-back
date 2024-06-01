@@ -25,6 +25,13 @@ namespace ProjetoImobiliario.Controllers
         }
 
         [HttpGet]
+        [Route("[action]/{gameName}/{tagLine}")]
+        public async Task<object> AddMatchesDatabase(string gameName, string tagLine)
+        {
+            return await _summonerService.AddMatchesDatabase(gameName, tagLine);
+        }
+
+        [HttpGet]
         [Route("[action]/{encryptedPUUID}")]
         public async Task<object> GetSummonerDashboard(string encryptedPUUID)
         {

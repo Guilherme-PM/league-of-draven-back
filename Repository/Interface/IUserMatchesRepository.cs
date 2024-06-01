@@ -1,4 +1,5 @@
-﻿using LeagueOfDraven.Models;
+﻿using LeagueOfDraven.DTO.Summoner;
+using LeagueOfDraven.Models;
 
 namespace LeagueOfDraven.Repository.Interface
 {
@@ -9,5 +10,6 @@ namespace LeagueOfDraven.Repository.Interface
         Task<UserMatches> GetMatchByIdAsync(string userMatchId);
         Task<int> TotalMatches();
         Task<int> TotalUsers();
+        Task<SummonerDTO> GetTotalStatistics(string encryptedPUUID);
     }
 }
