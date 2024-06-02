@@ -1,4 +1,5 @@
 ﻿using LeagueOfDraven.Data;
+using LeagueOfDraven.DTO.Matches;
 using LeagueOfDraven.DTO.Summoner;
 using LeagueOfDraven.Models;
 using LeagueOfDraven.Repository.Interface;
@@ -60,6 +61,13 @@ namespace LeagueOfDraven.Repository
                 TotalDamageTaken = totalDamageTaken,
                 TotalGoldEarned = totalGoldEarned
             };
+        }
+
+        public async Task<List<UserMatches>> GetLatestMatchesKillsDeaths(string encryptedPUUID)
+        {
+            var matches = await _dbContext.UserMatches.Include(x => x.PlayerStatistics).Where(x => x.Puuid == encryptedPUUID).OrderByDescending(x => x.MatchDate).Take(10).ToListAsync();
+
+            return matches;
         }
     }
 }

@@ -11,5 +11,6 @@ namespace LeagueOfDraven.Repository.Interface
         Task<int> TotalMatches();
         Task<int> TotalUsers();
         Task<SummonerDTO> GetTotalStatistics(string encryptedPUUID);
+        Task<List<UserMatches>> GetLatestMatchesKillsDeaths(string encryptedPUUID);
     }
 }

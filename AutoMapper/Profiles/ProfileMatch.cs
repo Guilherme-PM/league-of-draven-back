@@ -33,8 +33,13 @@ namespace LeagueOfDraven.AutoMapper.Profiles
                 .ForMember(x => x.Role, y => y.MapFrom(z => z.UserMatch.PlayerStatistics.FirstOrDefault(xx => xx.ParticipantId == z.ParticipantId).Role));
 
             CreateMap<MatchesPlayerItems, MatchItemsDTO>()
-                .ForMember(dest => dest.ItemName, opt => opt.MapFrom(src => src.ItemName))
-                .ForMember(dest => dest.ItemImageURL, opt => opt.MapFrom(src => $"https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/{src.ItemId}.png"));
+                .ForMember(x => x.ItemName, y => y.MapFrom(z => z.ItemName))
+                .ForMember(x => x.ItemImageURL, y => y.MapFrom(z => $"https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/{z.ItemId}.png"));
+
+            CreateMap<UserMatches, LatestMatchesKillsDeathsDTO>()
+                .ForMember(x => x.MatchDate, y => y.MapFrom(z => z.MatchDate))
+                .ForMember(x => x.Kills, y => y.MapFrom(z => z.PlayerStatistics.FirstOrDefault(xx => xx.Puuid == z.Puuid).Kills))
+                .ForMember(x => x.Deaths, y => y.MapFrom(z => z.PlayerStatistics.FirstOrDefault(xx => xx.Puuid == z.Puuid).Deaths));
         }
     }
 }

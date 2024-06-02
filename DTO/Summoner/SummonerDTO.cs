@@ -1,4 +1,6 @@
-﻿namespace LeagueOfDraven.DTO.Summoner
+﻿using LeagueOfDraven.DTO.Matches;
+
+namespace LeagueOfDraven.DTO.Summoner
 {
     public class SummonerDTO
     {
@@ -15,5 +17,6 @@
         public int TotalGoldEarned { get; set; }
         public SummonerRankedDTO SummonerRankedDTO { get; set; }
         public SummonerMasteryDTO SummonerMasteryDTO { get; set; }
+        public List<LatestMatchesKillsDeathsDTO> LatestMatchesKillsDeathsDTO { get; set; }
     }
 }

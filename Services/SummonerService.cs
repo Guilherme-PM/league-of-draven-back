@@ -249,7 +249,7 @@ namespace LeagueOfDraven.Services
 
             SummonerDTO summoner = new()
             {
-                Username = summonerAccount.GameName + "#" + summonerAccount.TagLine,
+                Username = summonerAccount.GameName + " # " + summonerAccount.TagLine,
                 SummonerLevel = summonerPuuid.SummonerLevel,
                 MostPlayedChampion = mostPlayedChampion.ChampionName,
                 MostPlayedChampionCount = mostPlayedChampion.Count,
@@ -261,8 +261,14 @@ namespace LeagueOfDraven.Services
                 TotalGoldEarned = totals.TotalGoldEarned,
                 BackgroundImage = $"https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{mostPlayedChampion.ChampionName}_0.jpg"
             };
-            
-            if(summonerRanked != null)
+
+            var latestMatches = await _userMatchesRepository.GetLatestMatchesKillsDeaths(encryptedPUUID);
+
+            List<LatestMatchesKillsDeathsDTO> latestMatchesMapper = _mapper.Map<List<LatestMatchesKillsDeathsDTO>>(latestMatches);
+
+            summoner.LatestMatchesKillsDeathsDTO = latestMatchesMapper;
+
+            if (summonerRanked != null)
             {
                 summoner.SummonerRankedDTO = new()
                 {
