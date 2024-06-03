@@ -3,13 +3,13 @@
   "builds": [
     {
       "src": "Program.cs",
-      "use": "@vercel/dotnet"
+      "use": "vercel-azure-functions"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "Program.cs"
+      "dest": "api/index.cs"
     }
   ]
 }
