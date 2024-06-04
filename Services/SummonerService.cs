@@ -117,7 +117,6 @@ namespace LeagueOfDraven.Services
                     ParticipantId = p.ParticipantId,
                     Items = await GetPlayerItems(p, match.MetaData.MatchId),
                     Farm = p.TotalMinionsKilled,
-                    Deaths = p.Deaths,
                     Lane = p.Lane,
                     Role = p.Role,
                     TotalDamageDealt = p.TotalDamageDealt,
@@ -128,6 +127,8 @@ namespace LeagueOfDraven.Services
                     WardsKilled = p.WardsKilled,
                     WardsPlaced = p.WardsPlaced,
                     Kills = p.Kills,
+                    Deaths = p.Deaths,
+                    Assists = p.Assists,
                     GoldEarned = p.GoldEarned,
                     GoldSpent = p.GoldSpent,
                     WonMatch = p.Win
@@ -264,7 +265,7 @@ namespace LeagueOfDraven.Services
 
             var latestMatches = await _userMatchesRepository.GetLatestMatchesKillsDeaths(encryptedPUUID);
 
-            List<LatestMatchesKillsDeathsDTO> latestMatchesMapper = _mapper.Map<List<LatestMatchesKillsDeathsDTO>>(latestMatches);
+            List<LatestMatchesDTO> latestMatchesMapper = _mapper.Map<List<LatestMatchesDTO>>(latestMatches);
 
             summoner.LatestMatchesKillsDeathsDTO = latestMatchesMapper;
 

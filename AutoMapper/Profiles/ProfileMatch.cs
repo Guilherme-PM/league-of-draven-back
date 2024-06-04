@@ -36,10 +36,18 @@ namespace LeagueOfDraven.AutoMapper.Profiles
                 .ForMember(x => x.ItemName, y => y.MapFrom(z => z.ItemName))
                 .ForMember(x => x.ItemImageURL, y => y.MapFrom(z => $"https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/{z.ItemId}.png"));
 
-            CreateMap<UserMatches, LatestMatchesKillsDeathsDTO>()
+            CreateMap<UserMatches, LatestMatchesDTO>()
                 .ForMember(x => x.MatchDate, y => y.MapFrom(z => z.MatchDate))
                 .ForMember(x => x.Kills, y => y.MapFrom(z => z.PlayerStatistics.FirstOrDefault(xx => xx.Puuid == z.Puuid).Kills))
-                .ForMember(x => x.Deaths, y => y.MapFrom(z => z.PlayerStatistics.FirstOrDefault(xx => xx.Puuid == z.Puuid).Deaths));
+                .ForMember(x => x.Deaths, y => y.MapFrom(z => z.PlayerStatistics.FirstOrDefault(xx => xx.Puuid == z.Puuid).Deaths))
+                .ForMember(x => x.Assists, y => y.MapFrom(z => z.PlayerStatistics.FirstOrDefault(xx => xx.Puuid == z.Puuid).Assists))
+                .ForMember(x => x.Lane, y => y.MapFrom(z => z.PlayerStatistics.FirstOrDefault(xx => xx.Puuid == z.Puuid).Lane))
+                .ForMember(x => x.Role, y => y.MapFrom(z => z.PlayerStatistics.FirstOrDefault(xx => xx.Puuid == z.Puuid).Role))
+                .ForMember(x => x.Farm, y => y.MapFrom(z => z.PlayerStatistics.FirstOrDefault(xx => xx.Puuid == z.Puuid).Farm))
+                .ForMember(x => x.Gold, y => y.MapFrom(z => z.PlayerStatistics.FirstOrDefault(xx => xx.Puuid == z.Puuid).GoldEarned))
+                .ForMember(x => x.Gamemode, y => y.MapFrom(z => z.GameMode))
+                .ForMember(x => x.MatchId, y => y.MapFrom(z => z.UserMatchId))
+                .ForMember(x => x.ChampionImage, y => y.MapFrom(z => $"https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/{z.Champions.FirstOrDefault(xx => xx.Puuid == z.Puuid).ChampionName}.png"));
         }
     }
 }

@@ -18,6 +18,7 @@
         public int WardsKilled { get; set; }
         public int Deaths { get; set; }
         public int Kills { get; set; }
+        public int Assists { get; set; }
         public string Lane { get; set; }
         public string Role { get; set; }
         public List<MatchesPlayerItems> Items { get; set; } = new List<MatchesPlayerItems>();
