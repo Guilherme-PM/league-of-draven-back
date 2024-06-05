@@ -13,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -21,8 +20,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "LeagueOfDraven API", Version = "v1" });
-
-    // Configure JWT authentication for Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -59,10 +56,8 @@ var signingConfiguration = new SigningConfiguration(tokenConfiguration);
 builder.Services.AddSingleton(signingConfiguration);
 builder.Services.AddSingleton(tokenConfiguration);
 
-// Inject dependencies
 builder.Services.InjectDependencies(builder.Configuration);
 
-// Configure database connection
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
@@ -70,12 +65,10 @@ builder.Services.AddAutoMappers(
     AutoMapperConfiguration.CreateExpression()
     .AddAutoMapperLeagueOfDraven());
 
-// Configure Identity
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-// Configure JWT authentication
 var key = Encoding.ASCII.GetBytes(tokenConfiguration.Secret);
 builder.Services.AddAuthentication(options =>
 {
@@ -96,10 +89,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Build the app
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
 
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "League Of Draven"));
