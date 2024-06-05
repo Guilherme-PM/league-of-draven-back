@@ -47,6 +47,7 @@ namespace LeagueOfDraven.AutoMapper.Profiles
                 .ForMember(x => x.Gold, y => y.MapFrom(z => z.PlayerStatistics.FirstOrDefault(xx => xx.Puuid == z.Puuid).GoldEarned))
                 .ForMember(x => x.Gamemode, y => y.MapFrom(z => z.GameMode))
                 .ForMember(x => x.MatchId, y => y.MapFrom(z => z.UserMatchId))
+                .ForMember(x => x.Win, y => y.MapFrom(z => z.PlayerStatistics.FirstOrDefault(xx => xx.Puuid == z.Puuid).WonMatch))
                 .ForMember(x => x.ChampionImage, y => y.MapFrom(z => $"https://ddragon.leagueoflegends.com/cdn/14.11.1/img/champion/{z.Champions.FirstOrDefault(xx => xx.Puuid == z.Puuid).ChampionName}.png"));
         }
     }

@@ -12,6 +12,7 @@
         public string Lane { get; set; }
         public string Role { get; set; }
         public string MatchDate { get; set; }
+        public bool Win { get; set; }
         public string ChampionImage { get; set; }
     }
 }
