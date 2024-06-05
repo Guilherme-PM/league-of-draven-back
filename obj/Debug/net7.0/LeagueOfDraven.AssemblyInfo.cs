@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LeagueOfDraven")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+90eb2fd2d1275a9d349a710dbe70729d6abfb97f")]
 [assembly: System.Reflection.AssemblyProductAttribute("LeagueOfDraven")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LeagueOfDraven")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

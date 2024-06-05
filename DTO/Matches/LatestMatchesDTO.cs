@@ -2,7 +2,7 @@
 {
     public class LatestMatchesDTO
     {
-        public int MatchId { get; set; }
+        public string MatchId { get; set; }
         public int Kills { get; set; }
         public int Deaths { get; set; }
         public int Assists { get; set; }

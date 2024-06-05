@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "G:\\Projetos\\league-of-draven-back\\LeagueOfDraven.csproj": {}
+    "C:\\Users\\USER\\Desktop\\league-of-draven-back\\LeagueOfDraven.csproj": {}
   },
   "projects": {
-    "G:\\Projetos\\league-of-draven-back\\LeagueOfDraven.csproj": {
+    "C:\\Users\\USER\\Desktop\\league-of-draven-back\\LeagueOfDraven.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Projetos\\league-of-draven-back\\LeagueOfDraven.csproj",
+        "projectUniqueName": "C:\\Users\\USER\\Desktop\\league-of-draven-back\\LeagueOfDraven.csproj",
         "projectName": "LeagueOfDraven",
-        "projectPath": "G:\\Projetos\\league-of-draven-back\\LeagueOfDraven.csproj",
-        "packagesPath": "C:\\Users\\guipa\\.nuget\\packages\\",
-        "outputPath": "G:\\Projetos\\league-of-draven-back\\obj\\",
+        "projectPath": "C:\\Users\\USER\\Desktop\\league-of-draven-back\\LeagueOfDraven.csproj",
+        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\USER\\Desktop\\league-of-draven-back\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\guipa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,9 +22,8 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://nuget.emzi0767.com/api/v3/index.json": {},
-          "https://www.myget.org/F/discord-net/api/v3/index.json": {}
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
@@ -36,6 +35,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -118,7 +122,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "D:\\Program Files\\dotnet\\sdk\\7.0.410\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
         }
       }
     }

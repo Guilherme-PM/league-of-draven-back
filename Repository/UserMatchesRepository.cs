@@ -65,7 +65,7 @@ namespace LeagueOfDraven.Repository
 
         public async Task<List<UserMatches>> GetLatestMatchesKillsDeaths(string encryptedPUUID)
         {
-            var matches = await _dbContext.UserMatches.Include(x => x.PlayerStatistics).Where(x => x.Puuid == encryptedPUUID).OrderByDescending(x => x.MatchDate).Take(10).ToListAsync();
+            var matches = await _dbContext.UserMatches.Include(x => x.PlayerStatistics).Include(x => x.Champions).Where(x => x.Puuid == encryptedPUUID).OrderByDescending(x => x.MatchDate).Take(10).ToListAsync();
 
             return matches;
         }
