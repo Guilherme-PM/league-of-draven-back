@@ -13,12 +13,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Adicione o serviço CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("https://leagueofdraven.azurewebsites.net/")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod());
+        policy => policy.WithOrigins("https://leagueofdraven.azurewebsites.net")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
 });
 
 builder.Services.AddControllers();
@@ -103,6 +104,9 @@ app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "League Of Draven"));
 
 app.UseHttpsRedirection();
+
+// Adicione o middleware CORS antes do middleware de autenticação e autorização
+app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthentication();
 app.UseAuthorization();
